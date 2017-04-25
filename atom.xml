@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2017-04-25T08:17:56.593Z</updated>
+  <updated>2017-04-25T11:25:43.457Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -14,6 +14,48 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Activity销毁时如何保存Fragment状态</title>
+    <link href="http://yoursite.com/2017/04/25/Activity%E9%94%80%E6%AF%81%E6%97%B6%E5%A6%82%E4%BD%95%E4%BF%9D%E5%AD%98Fragment%E7%8A%B6%E6%80%81/"/>
+    <id>http://yoursite.com/2017/04/25/Activity销毁时如何保存Fragment状态/</id>
+    <published>2017-04-25T11:25:23.000Z</published>
+    <updated>2017-04-25T11:25:43.457Z</updated>
+    
+    <content type="html"><![CDATA[<p>转载请标明出处：<br><a href="http://blog.csdn.net/a940659387/article/details/50730076；" target="_blank" rel="external">http://blog.csdn.net/a940659387/article/details/50730076；</a> </p>
+<p>原文：<a href="http://emuneee.com/blog/2013/01/07/saving-fragment-states/" target="_blank" rel="external">http://emuneee.com/blog/2013/01/07/saving-fragment-states/</a><br>在Android 3.0(SDK 11)以后，Android 出现了一个伟大的功能：如何在你的App中保存和还原你的Framgent数据。</p>
+<p>###它是什么</p>
+<pre><code>我再我下一个App开发中期的时候参考Android API时,偶然发现  FragmentManager.putFragment(Bundle, String, Fragment) and FragmentManager.getFragment(Bundle, String) 这两个方法。它们的作用？
+
+putFragment
+</code></pre><p>将一个Fragment的引用传递到Bundle中。这个Bundle可以一直保存它的数据，以后通过调用<br>    <a href="http://developer.android.com/reference/android/app/FragmentManager.html#getFragment%28android.os.Bundle,%20java.lang.String%29" target="_blank" rel="external">getFragment(Bundle, String)</a>方法得到一个一样的Fragmet 实例。</p>
+<pre><code>getFragment
+</code></pre><p>取回一个先前通过 <a href="http://developer.android.com/reference/android/app/FragmentManager.html#putFragment%28android.os.Bundle,%20java.lang.String,%20android.app.Fragment%29" target="_blank" rel="external">putFragment(Bundle, String, Fragment)</a>.方法存储的fragment实例。</p>
+<pre><code>根据我的理解，当你把当前的Fragment放置到bundle中，他会保存一个的指针指向这个fragment的地址;当你调用getFragment()方法时，它将返回你通过putFragment保存的指针对应的Fragment实例。
+</code></pre><p>你也可以通过使用FramgentManager APIs 去保存一个fragment 对应的指针（我感觉叫引用更好） 到bundle中 在以后用到时取出。它也允许你实现这个指针的存储跟取出（还原）。 </p>
+<pre><code>---Diane Hackborn ,Android 架构师。  [Source](https://groups.google.com/forum/?fromgroups=#!topic/android-developers/NBlMJnMaGbo)
+</code></pre><p>###如何去使用它<br>一个使用这个API的方法是在我的这个Acticity的创建和销毁的时候。自fragment出现以来，我通常用两个Activity来使用它，一个是我的activity,另一个用来设置Fragment。我再我的activity中管理fragment.</p>
+<p><strong>putFragment</strong></p>
+<pre><code>在activity的 onSaveInstanceState 像这样使用：
+</code></pre><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">@Override</div><div class="line">protected void onSaveInstanceState(Bundle outState) &#123;</div><div class="line">   FragmentManager manager = getFragmentManager();</div><div class="line">   manager.putFragment(outState, MyFragment.TAG, mMyFragment);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>MyFragment 是一个在我应用中创建的Fragment，这个bundle,outState,只是一个简单的bunlde,它将存储你fragment(即MyFragment)对应的引用（指针）。 MyFragment.TAG 是你的fragment指针以后会用到的key值。</p>
+<p><strong>GetFragment</strong></p>
+<p>我有一个自定义方法（instantiateFragments） ，它会做一到两件事情：当我的应用是冷启动时抓取我的fragment实例 或者 获得现在的MyFragment内容。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">private void instantiateFragments(Bundle inState) &#123;</div><div class="line">   FragmentManager manager = getFragmentManager();</div><div class="line">   FragmentTransaction transaction = manager.beginTransaction();</div><div class="line"></div><div class="line">   if (inState != null) &#123;</div><div class="line">      mMyFragment = (MyFragment) manager.getFragment(inState, MyFragment.TAG);</div><div class="line">   &#125; else &#123;</div><div class="line">      mMyFragment = new MyFragment();</div><div class="line">      transaction.add(R.id.fragment, mMyFragment, MyFragment.TAG);</div><div class="line">      transaction.commit();</div><div class="line">   &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>我在我的activity中调用instantiateFragments 这个方法，onRestoreInstanceState传入的参数为null时（onCreate 方法通过冷启动触发），当通过热启动触发时，传入的参数为bundle.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">@Override</div><div class="line">protected void onRestoreInstanceState(Bundle inState) &#123;</div><div class="line">   instantiateFragments(inState);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>当用户旋转设备时，Android 将销毁Activity,并在销毁前触发onSaveInstanceState，允许开发者来<br>保存数据。一旦activity被重新启动，这个OS 将触发onRestoreInstanceState 恢复开发者旋转前的保存的状态。</p>
+<p>我鼓励你继续更深调查Android框架。因为所有类型都有细微的差别,他们将简化Android应用程序开发工作。</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;转载请标明出处：&lt;br&gt;&lt;a href=&quot;http://blog.csdn.net/a940659387/article/details/50730076；&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;http://blog.csdn.net/a9406
+    
+    </summary>
+    
+    
+  </entry>
   
   <entry>
     <title>article title</title>

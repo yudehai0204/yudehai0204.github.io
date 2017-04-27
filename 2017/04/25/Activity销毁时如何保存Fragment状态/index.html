@@ -157,10 +157,9 @@
     </span>
 
         <section class="post-content">
-            <p>转载请标明出处：<br><a href="http://blog.csdn.net/a940659387/article/details/50730076；" target="_blank" rel="external">http://blog.csdn.net/a940659387/article/details/50730076；</a> </p>
+            <p>转载请标明出处：<br><a href="http://blog.csdn.net/a940659387/article/details/50730076" target="_blank" rel="external">http://blog.csdn.net/a940659387/article/details/50730076</a></p>
 <p>原文：<a href="http://emuneee.com/blog/2013/01/07/saving-fragment-states/" target="_blank" rel="external">http://emuneee.com/blog/2013/01/07/saving-fragment-states/</a><br>在Android 3.0(SDK 11)以后，Android 出现了一个伟大的功能：如何在你的App中保存和还原你的Framgent数据。</p>
-<p>###它是什么</p>
-<pre><code>我再我下一个App开发中期的时候参考Android API时,偶然发现  FragmentManager.putFragment(Bundle, String, Fragment) and FragmentManager.getFragment(Bundle, String) 这两个方法。它们的作用？
+<h3 id="它是什么"><a href="#它是什么" class="headerlink" title="它是什么"></a>它是什么</h3><pre><code>我再我下一个App开发中期的时候参考Android API时,偶然发现  FragmentManager.putFragment(Bundle, String, Fragment) and FragmentManager.getFragment(Bundle, String) 这两个方法。它们的作用？
 
 putFragment
 </code></pre><p>将一个Fragment的引用传递到Bundle中。这个Bundle可以一直保存它的数据，以后通过调用<br>    <a href="http://developer.android.com/reference/android/app/FragmentManager.html#getFragment%28android.os.Bundle,%20java.lang.String%29" target="_blank" rel="external">getFragment(Bundle, String)</a>方法得到一个一样的Fragmet 实例。</p>
@@ -169,7 +168,7 @@ putFragment
 <pre><code>根据我的理解，当你把当前的Fragment放置到bundle中，他会保存一个的指针指向这个fragment的地址;当你调用getFragment()方法时，它将返回你通过putFragment保存的指针对应的Fragment实例。
 </code></pre><p>你也可以通过使用FramgentManager APIs 去保存一个fragment 对应的指针（我感觉叫引用更好） 到bundle中 在以后用到时取出。它也允许你实现这个指针的存储跟取出（还原）。 </p>
 <pre><code>---Diane Hackborn ,Android 架构师。  [Source](https://groups.google.com/forum/?fromgroups=#!topic/android-developers/NBlMJnMaGbo)
-</code></pre><p>###如何去使用它<br>一个使用这个API的方法是在我的这个Acticity的创建和销毁的时候。自fragment出现以来，我通常用两个Activity来使用它，一个是我的activity,另一个用来设置Fragment。我再我的activity中管理fragment.</p>
+</code></pre><h3 id="如何去使用它"><a href="#如何去使用它" class="headerlink" title="如何去使用它"></a>如何去使用它</h3><p>一个使用这个API的方法是在我的这个Acticity的创建和销毁的时候。自fragment出现以来，我通常用两个Activity来使用它，一个是我的activity,另一个用来设置Fragment。我再我的activity中管理fragment.</p>
 <p><strong>putFragment</strong></p>
 <pre><code>在activity的 onSaveInstanceState 像这样使用：
 </code></pre><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">@Override</div><div class="line">protected void onSaveInstanceState(Bundle outState) &#123;</div><div class="line">   FragmentManager manager = getFragmentManager();</div><div class="line">   manager.putFragment(outState, MyFragment.TAG, mMyFragment);</div><div class="line">&#125;</div></pre></td></tr></table></figure>

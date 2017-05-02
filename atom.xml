@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2017-04-28T07:28:47.322Z</updated>
+  <updated>2017-05-02T08:51:26.057Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -20,10 +20,11 @@
     <link href="http://yoursite.com/2017/04/28/android-%E8%87%AA%E5%8A%A8%E6%92%AD%E6%94%BEBanner/"/>
     <id>http://yoursite.com/2017/04/28/android-自动播放Banner/</id>
     <published>2017-04-28T07:28:17.000Z</published>
-    <updated>2017-04-28T07:28:47.322Z</updated>
+    <updated>2017-05-02T08:51:26.057Z</updated>
     
     <content type="html"><![CDATA[<h3 id="先看一下效果图"><a href="#先看一下效果图" class="headerlink" title="先看一下效果图"></a>先看一下效果图</h3><p><img src="http://img.blog.csdn.net/20160115104236488" alt="这里写图片描述"></p>
-<h4 id="支持本地图片以及网络图片or本地网络混合。"><a href="#支持本地图片以及网络图片or本地网络混合。" class="headerlink" title="支持本地图片以及网络图片or本地网络混合。"></a>支持本地图片以及网络图片or本地网络混合。</h4><p>使用方式：</p>
+<h4 id="支持本地图片以及网络图片or本地网络混合。"><a href="#支持本地图片以及网络图片or本地网络混合。" class="headerlink" title="支持本地图片以及网络图片or本地网络混合。"></a>支持本地图片以及网络图片or本地网络混合。</h4><a id="more"></a>
+<p>使用方式：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">&lt;com.jalen.autobanner.BannerView</div><div class="line">        android:id=&quot;@+id/banner&quot;</div><div class="line">        android:layout_width=&quot;match_parent&quot;</div><div class="line">        android:layout_height=&quot;230dip&quot;&gt;</div><div class="line">&lt;/com.jalen.autobanner.BannerView&gt;</div></pre></td></tr></table></figure>
 <p>核心的实现代码</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div></pre></td><td class="code"><pre><div class="line"> int length = mList.size();</div><div class="line">        View view = LayoutInflater.from(mContext).inflate(R.layout.banner_view,this,true);</div><div class="line">        LinearLayout ll = (LinearLayout) view.findViewById(R.id.ll_points);</div><div class="line">        vp= (ViewPager) view.findViewById(R.id.vp);</div><div class="line">        ll.removeAllViews();</div><div class="line">        LinearLayout.LayoutParams ll_parmas = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT);</div><div class="line">        ll_parmas.leftMargin=5;</div><div class="line">        ll_parmas.rightMargin=5;</div><div class="line">        for(int i=0;i&lt;length;i++)&#123;</div><div class="line">            ImageView img = new ImageView(mContext);</div><div class="line">            img.setLayoutParams(ll_parmas);</div><div class="line">            if(i==0)&#123;</div><div class="line">                img.setImageResource(R.mipmap.dot_focus);</div><div class="line">            &#125;else&#123;</div><div class="line">                img.setImageResource(R.mipmap.dot_blur);</div><div class="line">            &#125;</div><div class="line">            ll.addView(img);</div><div class="line">            mImgs.add(img);</div><div class="line"></div><div class="line">            final ImageView imgforview = new ImageView(mContext);</div><div class="line">            imgforview.setOnClickListener(this);</div><div class="line">            imgforview.setScaleType(ImageView.ScaleType.FIT_XY);</div><div class="line">            if(mList.get(i).getType()==0)&#123;//本地图片</div><div class="line">                imgforview.setImageResource(mList.get(i).getDrawableforint());</div><div class="line"></div><div class="line">            &#125;else&#123;//网络</div><div class="line">                Glide.with(mContext).load(mList.get(i).getDrawableforurl()).diskCacheStrategy(DiskCacheStrategy.ALL).into(imgforview);</div><div class="line">//                Glide.with(mContext).load(mList.get(i).getDrawableforurl()).listener(new RequestListener&lt;String, GlideDrawable&gt;() &#123;</div><div class="line">//                    @Override</div><div class="line">//                    public boolean onException(Exception e, String model, Target&lt;GlideDrawable&gt; target, boolean isFirstResource) &#123;</div><div class="line">//                        Log.d(&quot;yu&quot;,&quot;Faile:&quot;+e.toString());</div><div class="line">//                        return false;</div><div class="line">//                    &#125;</div><div class="line">//</div><div class="line">//                    @Override</div><div class="line">//                    public boolean onResourceReady(GlideDrawable resource, String model, Target&lt;GlideDrawable&gt; target, boolean isFromMemoryCache, boolean isFirstResource) &#123;</div><div class="line">//                            imgforview.setImageDrawable(resource);</div><div class="line">//                        return false;</div><div class="line">//                    &#125;</div><div class="line">//                &#125;).into(imgforview);</div><div class="line">//                Log.d(&quot;yu&quot;,&quot;url: &quot;+mList.get(i).getDrawableforurl());</div><div class="line">            &#125;</div><div class="line">            mViews.add(imgforview);</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        vp.setAdapter(new MyAdapter());</div><div class="line">        vp.addOnPageChangeListener(onPageChange);</div></pre></td></tr></table></figure>
@@ -40,7 +41,8 @@
     
     <summary type="html">
     
-      &lt;h3 id=&quot;先看一下效果图&quot;&gt;&lt;a href=&quot;#先看一下效果图&quot; class=&quot;headerlink&quot; title=&quot;先看一下效果图&quot;&gt;&lt;/a&gt;先看一下效果图&lt;/h3&gt;&lt;p&gt;&lt;img src=&quot;http://img.blog.csdn.net/201601151042364
+      &lt;h3 id=&quot;先看一下效果图&quot;&gt;&lt;a href=&quot;#先看一下效果图&quot; class=&quot;headerlink&quot; title=&quot;先看一下效果图&quot;&gt;&lt;/a&gt;先看一下效果图&lt;/h3&gt;&lt;p&gt;&lt;img src=&quot;http://img.blog.csdn.net/20160115104236488&quot; alt=&quot;这里写图片描述&quot;&gt;&lt;/p&gt;
+&lt;h4 id=&quot;支持本地图片以及网络图片or本地网络混合。&quot;&gt;&lt;a href=&quot;#支持本地图片以及网络图片or本地网络混合。&quot; class=&quot;headerlink&quot; title=&quot;支持本地图片以及网络图片or本地网络混合。&quot;&gt;&lt;/a&gt;支持本地图片以及网络图片or本地网络混合。&lt;/h4&gt;
     
     </summary>
     
@@ -54,9 +56,9 @@
     <link href="http://yoursite.com/2017/04/28/Android%E9%80%82%E9%85%8D6-0%EF%BC%8C%E5%85%A8%E5%B1%80Dialog%E7%BB%88%E6%9E%81%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88/"/>
     <id>http://yoursite.com/2017/04/28/Android适配6-0，全局Dialog终极解决方案/</id>
     <published>2017-04-28T07:18:52.000Z</published>
-    <updated>2017-04-28T07:21:49.116Z</updated>
+    <updated>2017-05-02T08:51:16.773Z</updated>
     
-    <content type="html"><![CDATA[<p>6.0推出之后，部分手机完全限制了全局Toast弹出类型。so 撸主<br>(<a href="http://blog.csdn.net/a940659387/article/details/50152561" target="_blank" rel="external">http://blog.csdn.net/a940659387/article/details/50152561</a>)<br>这个文章也该光荣退休了。<br><strong>but 想要看这篇文章的童鞋应该先看撸主的前一篇文章，why?  because 你不看辣个就看不懂这个。</strong></p>
+    <content type="html"><![CDATA[<p>6.0推出之后，部分手机完全限制了全局Toast弹出类型。so 撸主<br>(<a href="http://blog.csdn.net/a940659387/article/details/50152561" target="_blank" rel="external">http://blog.csdn.net/a940659387/article/details/50152561</a>)<br>这个文章也该光荣退休了。<br><strong>but 想要看这篇文章的童鞋应该先看撸主的前一篇文章，why?  because 你不看辣个就看不懂这个。</strong><br><a id="more"></a></p>
 <h3 id="Application-ActivityLifecycleCallbacks"><a href="#Application-ActivityLifecycleCallbacks" class="headerlink" title="Application.ActivityLifecycleCallbacks"></a>Application.ActivityLifecycleCallbacks</h3><p>顾明思议，肯定是用在Application中的 。 关于不知道怎么配置Application的童鞋可自行谷歌。</p>
 <p>再瞅，带着callback must 是一个接口。  没错  就是一个接口 一个在application中实现用来监听activity</p>
 <p>生命周期触发步骤的东东。</p>
@@ -76,7 +78,7 @@
     
     <summary type="html">
     
-      &lt;p&gt;6.0推出之后，部分手机完全限制了全局Toast弹出类型。so 撸主&lt;br&gt;(&lt;a href=&quot;http://blog.csdn.net/a940659387/article/details/50152561&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;
+      &lt;p&gt;6.0推出之后，部分手机完全限制了全局Toast弹出类型。so 撸主&lt;br&gt;(&lt;a href=&quot;http://blog.csdn.net/a940659387/article/details/50152561&quot;&gt;http://blog.csdn.net/a940659387/article/details/50152561&lt;/a&gt;)&lt;br&gt;这个文章也该光荣退休了。&lt;br&gt;&lt;strong&gt;but 想要看这篇文章的童鞋应该先看撸主的前一篇文章，why?  because 你不看辣个就看不懂这个。&lt;/strong&gt;&lt;br&gt;
     
     </summary>
     
@@ -90,10 +92,10 @@
     <link href="http://yoursite.com/2017/04/25/Activity%E9%94%80%E6%AF%81%E6%97%B6%E5%A6%82%E4%BD%95%E4%BF%9D%E5%AD%98Fragment%E7%8A%B6%E6%80%81/"/>
     <id>http://yoursite.com/2017/04/25/Activity销毁时如何保存Fragment状态/</id>
     <published>2017-04-25T11:25:23.000Z</published>
-    <updated>2017-04-27T06:47:39.079Z</updated>
+    <updated>2017-05-02T08:51:04.937Z</updated>
     
     <content type="html"><![CDATA[<p>转载请标明出处：<br><a href="http://blog.csdn.net/a940659387/article/details/50730076" target="_blank" rel="external">http://blog.csdn.net/a940659387/article/details/50730076</a></p>
-<p>原文：<a href="http://emuneee.com/blog/2013/01/07/saving-fragment-states/" target="_blank" rel="external">http://emuneee.com/blog/2013/01/07/saving-fragment-states/</a><br>在Android 3.0(SDK 11)以后，Android 出现了一个伟大的功能：如何在你的App中保存和还原你的Framgent数据。</p>
+<p>原文：<a href="http://emuneee.com/blog/2013/01/07/saving-fragment-states/" target="_blank" rel="external">http://emuneee.com/blog/2013/01/07/saving-fragment-states/</a><br>在Android 3.0(SDK 11)以后，Android 出现了一个伟大的功能：如何在你的App中保存和还原你的Framgent数据。<br><a id="more"></a></p>
 <h3 id="它是什么"><a href="#它是什么" class="headerlink" title="它是什么"></a>它是什么</h3><pre><code>我再我下一个App开发中期的时候参考Android API时,偶然发现  FragmentManager.putFragment(Bundle, String, Fragment) and FragmentManager.getFragment(Bundle, String) 这两个方法。它们的作用？
 
 putFragment
@@ -119,7 +121,8 @@ putFragment
     
     <summary type="html">
     
-      &lt;p&gt;转载请标明出处：&lt;br&gt;&lt;a href=&quot;http://blog.csdn.net/a940659387/article/details/50730076&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;http://blog.csdn.net/a94065
+      &lt;p&gt;转载请标明出处：&lt;br&gt;&lt;a href=&quot;http://blog.csdn.net/a940659387/article/details/50730076&quot;&gt;http://blog.csdn.net/a940659387/article/details/50730076&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;原文：&lt;a href=&quot;http://emuneee.com/blog/2013/01/07/saving-fragment-states/&quot;&gt;http://emuneee.com/blog/2013/01/07/saving-fragment-states/&lt;/a&gt;&lt;br&gt;在Android 3.0(SDK 11)以后，Android 出现了一个伟大的功能：如何在你的App中保存和还原你的Framgent数据。&lt;br&gt;
     
     </summary>
     
@@ -131,10 +134,11 @@ putFragment
     <link href="http://yoursite.com/2017/04/25/hello-world/"/>
     <id>http://yoursite.com/2017/04/25/hello-world/</id>
     <published>2017-04-25T07:01:00.530Z</published>
-    <updated>2017-04-25T07:01:00.535Z</updated>
+    <updated>2017-05-02T08:51:33.893Z</updated>
     
     <content type="html"><![CDATA[<p>Welcome to <a href="https://hexo.io/" target="_blank" rel="external">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="external">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="external">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="external">GitHub</a>.</p>
 <h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo new <span class="string">"My New Post"</span></div></pre></td></tr></table></figure>
+<a id="more"></a>
 <p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="external">Writing</a></p>
 <h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo server</div></pre></td></tr></table></figure>
 <p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="external">Server</a></p>
@@ -146,7 +150,8 @@ putFragment
     
     <summary type="html">
     
-      &lt;p&gt;Welcome to &lt;a href=&quot;https://hexo.io/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;Hexo&lt;/a&gt;! This is your very first post. Check &lt;a href=&quot;https://hexo.
+      &lt;p&gt;Welcome to &lt;a href=&quot;https://hexo.io/&quot;&gt;Hexo&lt;/a&gt;! This is your very first post. Check &lt;a href=&quot;https://hexo.io/docs/&quot;&gt;documentation&lt;/a&gt; for more info. If you get any problems when using Hexo, you can find the answer in &lt;a href=&quot;https://hexo.io/docs/troubleshooting.html&quot;&gt;troubleshooting&lt;/a&gt; or you can ask me on &lt;a href=&quot;https://github.com/hexojs/hexo/issues&quot;&gt;GitHub&lt;/a&gt;.&lt;/p&gt;
+&lt;h2 id=&quot;Quick-Start&quot;&gt;&lt;a href=&quot;#Quick-Start&quot; class=&quot;headerlink&quot; title=&quot;Quick Start&quot;&gt;&lt;/a&gt;Quick Start&lt;/h2&gt;&lt;h3 id=&quot;Create-a-new-post&quot;&gt;&lt;a href=&quot;#Create-a-new-post&quot; class=&quot;headerlink&quot; title=&quot;Create a new post&quot;&gt;&lt;/a&gt;Create a new post&lt;/h3&gt;&lt;figure class=&quot;highlight bash&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;1&lt;/div&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;$ hexo new &lt;span class=&quot;string&quot;&gt;&quot;My New Post&quot;&lt;/span&gt;&lt;/div&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
     
     </summary>
     
